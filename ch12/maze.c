@@ -78,6 +78,13 @@ BOOL point_visited(SqStack *ps, Point tp){
     return FALSE;
 }
 
+BOOL reach_end(Point p){
+    if(p.row==row_max-1 && p.col==col_max-1){
+        return TRUE;
+    }
+    return FALSE;
+}
+
 void visit(SqStack *ps){
 
     Point cur = {0, 0, DirectionDown};
@@ -114,7 +121,7 @@ void visit(SqStack *ps){
         if(boundary_check(temp) && !point_visited(ps, temp)){
             temp.direct = DirectionDown;//DirectionUp;
             push(ps, &temp);
-            if(temp.row==row_max-1 && temp.col==col_max-1){
+            if(reach_end(temp)){
                 print_maze(ps);
                 break;
             }
