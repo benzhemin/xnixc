@@ -17,13 +17,13 @@ linklist* create_linklist(unsigned typesize){
     return list;
 }
 
-void destory_linklist(linklist *l){
 
+void destory_linklist(linklist *l, destory_pelem dp){
     node_st *p = l->header;
     while (p!=NULL){
         node_st *tp = p;
         p = p->next;
-        free(tp->pelem);
+        dp(tp->pelem);
         free(tp);
     }
 

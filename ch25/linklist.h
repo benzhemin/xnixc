@@ -21,9 +21,11 @@ typedef struct {
 
 typedef void (*visit_func)(node_st *node);
 
+typedef void (*destory_pelem)(void *pelem);
+
 linklist* create_linklist(unsigned typesize);
 
-void destory_linklist(linklist *l);
+void destory_linklist(linklist *l, destory_pelem dp);
 
 BOOL empty_linklist(linklist *l);
 
