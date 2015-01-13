@@ -25,11 +25,10 @@ void parse_header(char *header){
     FILE *fp = fopen(path, "r");
     if (fp != NULL){
         fclose(fp);
-        puts(path);
     }else{
         strcat(path, ": cannot find");
-        puts(path);
     }
+    puts(path);
 }
 
 void print_headers(char *file_name){

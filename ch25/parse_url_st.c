@@ -63,8 +63,7 @@ url_st* parse_url(char *url_str){
             break;
 
         if (strstr(url_parse, "www") || strstr(url_parse, "http")){
-            url->url_host = malloc(strlen(url_parse)+1);
-            strcpy(url->url_host, url_parse);
+            cp_str(&url->url_host, url_parse);
         }else{
 
             for(; ; url_parse=NULL){
@@ -80,6 +79,7 @@ url_st* parse_url(char *url_str){
                 cp_str(&param->value, param_value);
 
                 insert_linklist(url->param_list, param);
+
             }
         }
     }

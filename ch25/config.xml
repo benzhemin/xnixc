@@ -3,6 +3,7 @@
 	<domain>www.mysite.com</domain>
 	<port>8080</port>
 	<cgihome>/cgi-bin</cgihome>
+
 </http>
 <-- Configuration of db -->
 <database>

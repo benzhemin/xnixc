@@ -22,6 +22,11 @@ void parse_ini(FILE *rd_fp, FILE *wr_fp){
         char *pb;
         for(pb=line_buf; *pb==' '; pb++);
 
+        if (*pb == '\n'){
+            fputc(*pb, wr_fp);
+            continue;
+        }
+
         char *tp;
         for(tp=line_buf; *tp!='\0'; tp++){
             if (*tp == '\n'){
@@ -60,8 +65,6 @@ void parse_ini(FILE *rd_fp, FILE *wr_fp){
                 strcpy(sec_buf, sec);
                 fprintf(wr_fp, xml_elem_start, sec_buf);
                 fputc('\n', wr_fp);
-            }else if (*pb == '\n'){
-                fputc(*pb, wr_fp);
             }
         }
     }
@@ -106,4 +109,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-
