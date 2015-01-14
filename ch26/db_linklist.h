@@ -20,7 +20,7 @@
 typedef struct _db_node_st{
     struct _db_node_st *next;
     struct _db_node_st *prev;
-    
+
     void *pelem;
 } db_node_st;
 
@@ -29,6 +29,7 @@ typedef struct _db_linklist{
     db_node_st *header;
     db_node_st *tail;
     unsigned typesize;
+    unsigned list_len;
 } db_linklist;
 
 typedef void (visit_func)(void *pelem);
@@ -45,6 +46,5 @@ BOOL db_linklist_empty(db_linklist *L);
 void db_linklist_print(db_linklist *L, visit_func visit);
 
 size_t db_linklist_length(db_linklist *L);
-
 
 #endif
