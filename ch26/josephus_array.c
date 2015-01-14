@@ -42,6 +42,7 @@ void Josephus(int m, int n){
             print_array(pa, m);
         }
 
+        //遍历到尾部计数器还没找到要杀死的人
         if (i==m-1 && find_kill==FALSE){
             break;
         }
