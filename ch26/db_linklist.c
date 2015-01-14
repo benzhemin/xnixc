@@ -97,10 +97,3 @@ size_t db_linklist_length(db_linklist *L){
     */
 }
 
-
-
-
-
-
-
-

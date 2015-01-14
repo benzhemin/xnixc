@@ -33,6 +33,7 @@ BOOL db_linklist_delete(db_linklist *L, db_node_st *pdel){
                 }else{
                     L->tail = pre;
                 }
+                free(p->pelem);
                 free(p);
             }
             //del header
@@ -58,6 +59,7 @@ BOOL db_linklist_delete(db_linklist *L, db_node_st *pdel){
     return del_res;
 }
 
+//因为不是循环双向链表，要对链表尾做重定位
 void Josephus(db_linklist *L, int n){
 
     unsigned counter = 0;
@@ -68,11 +70,7 @@ void Josephus(db_linklist *L, int n){
         if (counter == n){
             db_node_st *tp = p;
 
-            if (p->next == NULL){
-                p = L->header;
-            }else{
-                p = p->next;
-            }
+            p = p->next ? p->next:L->header;
 
             db_linklist_delete(L, tp);
             counter = 0;
@@ -80,12 +78,9 @@ void Josephus(db_linklist *L, int n){
             continue;
         }
 
+        p = p->next ? p->next:L->header;
+
         counter++;
-        if (p->next == NULL){
-            p = L->header;
-        }else{
-            p = p->next;
-        }
     }
 }
 
@@ -121,7 +116,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-
-
-
-
