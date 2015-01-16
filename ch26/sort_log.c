@@ -47,7 +47,50 @@ void parse_log(db_linklist *L, char *file_name){
     fclose(fp);
 }
 
+
+int cmp_record(db_node_st *pa, db_node_st *pb){
+
+    char *pa_time, *pb_time;
+
+    crcp_str(&pa_time, ((record_st *)(pa->pelem))->time);
+    crcp_str(&pb_time, ((record_st *)(pb->pelem))->time);
+
+    char *pa_space_split_ptr = NULL;
+    char *pb_space_split_ptr = NULL;
+
+    int cmp_res = 0;
+    for( ; ; pa_time=NULL, pb_time=NULL){
+
+        char *pa_time_piece = strtok_r(pa_time, ":", &pa_space_split_ptr);
+        char *pb_time_piece = strtok_r(pb_time, ":", &pb_space_split_ptr);
+
+        if (pa_time_piece==NULL || pb_time_piece==NULL)
+            break;
+
+        cmp_res = strcmp(pa_time_piece, pb_time_piece);
+
+        if (cmp_res != 0)
+            break;
+
+    }
+
+    return cmp_res;
+}
+
+//insertion sort
+//double link easy to maintain
 void sort_records(db_linklist *L){
+
+    db_node_st *pn = L->header;
+
+    while (pn != NULL){
+
+        db_node_st *p = L->header;
+        while(p!=pn && )
+
+        pn = pn->next;
+
+    }
 
 }
 
