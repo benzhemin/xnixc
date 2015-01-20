@@ -32,7 +32,7 @@ typedef struct _db_linklist{
     unsigned list_len;
 } db_linklist;
 
-typedef void (visit_func)(void *pelem);
+typedef void (visit_func)(db_node_st *pelem);
 typedef void (destory_func)(void *pelem);
 
 db_linklist* db_linklist_create(unsigned typesize);

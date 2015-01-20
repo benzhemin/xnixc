@@ -20,8 +20,16 @@ void crcp_str(char **dst, char *src){
     *dst = new_str;
 }
 
+void destory_rd(void *pelem){
+    record_st *p = pelem;
+
+    free(p->date);
+    free(p->time);
+    free(p);
+}
+
 void parse_log(db_linklist *L, char *file_name){
-    FILE *fp = fopen(file_name, "w+");
+    FILE *fp = fopen(file_name, "r");
     if (fp == NULL){
         perror("open file error");
         exit(0);
@@ -29,6 +37,11 @@ void parse_log(db_linklist *L, char *file_name){
 
     char buf[512];
     while(fgets(buf, sizeof(buf), fp)!=NULL){
+
+        char *p_newline = strchr(buf, '\n');
+        if (p_newline != NULL){
+            *p_newline = '\0';
+        }
 
         char *space_split_svptr;
 
@@ -47,34 +60,17 @@ void parse_log(db_linklist *L, char *file_name){
     fclose(fp);
 }
 
-
 int cmp_record(db_node_st *pa, db_node_st *pb){
+    record_st *pa_rd = pa->pelem;
+    record_st *pb_rd = pb->pelem;
 
-    char *pa_time, *pb_time;
+    int res = strcmp(pa_rd->time, pb_rd->time);
 
-    crcp_str(&pa_time, ((record_st *)(pa->pelem))->time);
-    crcp_str(&pb_time, ((record_st *)(pb->pelem))->time);
-
-    char *pa_space_split_ptr = NULL;
-    char *pb_space_split_ptr = NULL;
-
-    int cmp_res = 0;
-    for( ; ; pa_time=NULL, pb_time=NULL){
-
-        char *pa_time_piece = strtok_r(pa_time, ":", &pa_space_split_ptr);
-        char *pb_time_piece = strtok_r(pb_time, ":", &pb_space_split_ptr);
-
-        if (pa_time_piece==NULL || pb_time_piece==NULL)
-            break;
-
-        cmp_res = strcmp(pa_time_piece, pb_time_piece);
-
-        if (cmp_res != 0)
-            break;
-
+    if (res == 0){
+        res = strcmp(pa_rd->date, pb_rd->date);
     }
 
-    return cmp_res;
+    return res;
 }
 
 //insertion sort
@@ -86,12 +82,64 @@ void sort_records(db_linklist *L){
     while (pn != NULL){
 
         db_node_st *p = L->header;
-        while(p!=pn && )
+        while(p!=pn){
+
+            if(cmp_record(pn, p) < 0){
+
+                //del pn
+                pn->prev->next = pn->next;
+                if (pn->next){
+                    pn->next->prev = pn->prev;
+                }else{
+                    L->tail = pn->prev;
+                }
+
+                if (p == L->header){
+                    pn->next = p;
+                    p->prev = pn;
+                    L->header = pn;
+                }else{
+                    p->prev->next = pn;
+                    pn->next = p;
+                    p->prev = pn;
+                }
+                break;
+            }
+            p = p->next;
+        }
 
         pn = pn->next;
 
     }
+}
 
+void visit(db_node_st *p){
+    record_st *p_rd = p->pelem;
+
+    printf("%s %s\n", p_rd->date, p_rd->time);
+}
+
+void write_back(db_linklist *L, char *log_file){
+    FILE *fp = fopen(log_file, "w");
+    if (fp == NULL){
+        perror("open log_file error");
+    }
+
+    db_node_st *p = L->header;
+
+    char buf[256] = {0};
+    int seq = 1;
+    while(p != NULL){
+        record_st *p_rd = p->pelem;
+
+        sprintf(buf, "%d %s %s\n", seq, p_rd->date, p_rd->time);
+        fputs(buf, fp);
+
+        p = p->next;
+        seq++;
+    }
+
+    fclose(fp);
 }
 
 int main(int argc, char *argv[]){
@@ -106,6 +154,12 @@ int main(int argc, char *argv[]){
     parse_log(L, log_file);
 
     sort_records(L);
+
+    db_linklist_print(L, visit);
+
+    write_back(L, log_file);
+
+    db_linklist_destory(L, destory_rd);
 
     return 0;
 }
