@@ -21,7 +21,7 @@ void crcp_str(char **dst, char *src){
 }
 
 void parse_log(db_linklist *L, char *file_name){
-    FILE *fp = fopen(file_name, "w+");
+    FILE *fp = fopen(file_name, "r");
     if (fp == NULL){
         perror("open file error");
         exit(0);
@@ -86,13 +86,51 @@ void sort_records(db_linklist *L){
     while (pn != NULL){
 
         db_node_st *p = L->header;
-        while(p!=pn && )
+        while(p!=pn){
+            if (cmp_record(pn, p) < 0){
+
+                //del pn first
+                pn->prev->next = pn->next;
+                if (pn->next != NULL){
+                    pn->next->prev = pn->prev;
+                }else{
+                    L->tail = pn->prev;
+                }
+
+
+                if (p == L->header){
+
+                    pn->next = L->header;
+                    pn->prev = NULL;
+
+                    L->header->prev = pn;
+                    L->header = pn;
+                }else{
+
+                    p->prev->next = pn;
+                    pn->prev = p->prev;
+
+                    pn->next = p;
+                    p->prev = pn;
+                }
+
+                break;
+            }
+
+            p = p->next;
+        }
 
         pn = pn->next;
 
     }
+}
+
+void visit(db_node_st *p){
+    record_st *pe = p->pelem;
+    printf("%s, %s\n", pe->date, pe->time);
 
 }
+
 
 int main(int argc, char *argv[]){
     if (argc < 2){
@@ -106,6 +144,8 @@ int main(int argc, char *argv[]){
     parse_log(L, log_file);
 
     sort_records(L);
+
+    db_linklist_print(L, visit);
 
     return 0;
 }
