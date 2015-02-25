@@ -83,7 +83,6 @@ void sort_records(db_linklist *L){
 
         db_node_st *p = L->header;
         while(p!=pn){
-
             if(cmp_record(pn, p) < 0){
 
                 //del pn
@@ -114,6 +113,9 @@ void sort_records(db_linklist *L){
 }
 
 void visit(db_node_st *p){
+    record_st *pe = p->pelem;
+    printf("%s, %s\n", pe->date, pe->time);
+
     record_st *p_rd = p->pelem;
 
     printf("%s %s\n", p_rd->date, p_rd->time);
@@ -141,6 +143,7 @@ void write_back(db_linklist *L, char *log_file){
 
     fclose(fp);
 }
+
 
 int main(int argc, char *argv[]){
     if (argc < 2){
